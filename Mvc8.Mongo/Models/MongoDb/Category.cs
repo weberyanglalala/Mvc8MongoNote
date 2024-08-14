@@ -11,9 +11,9 @@ public class Category
     [BsonRepresentation(BsonType.ObjectId)]
     public string Id { get; set; }
 
-    [BsonElement("ancestors")]
+    [BsonElement("ancestor")]
     [BsonRepresentation(BsonType.ObjectId)]
-    public List<string> Ancestors { get; set; }
+    public string Ancestor { get; set; }
 
     [BsonElement("createdAt")]
     public DateTime CreatedAt { get; set; }
