@@ -63,8 +63,8 @@ public class Address
 
 public class OrderItem
 {
-    [BsonElement("product")]
-    public ProductItem Product { get; set; }
+    [BsonElement("productItem")]
+    public ProductItem ProductItem { get; set; }
 
     [BsonElement("quantity")]
     public int Quantity { get; set; }
@@ -73,13 +73,11 @@ public class OrderItem
     public decimal Subtotal { get; set; }
 }
 
-
 public class ProductItem
 {
-    [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    [BsonElement("id")]
-    public string Id { get; set; }
+    [BsonElement("productId")]
+    public string ProductId { get; set; }
 
     [BsonElement("sku")]
     public string Sku { get; set; }
