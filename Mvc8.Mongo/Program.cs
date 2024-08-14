@@ -1,3 +1,8 @@
+using MongoDB.Driver;
+using Mvc8.Mongo.Models.MongoDb;
+using Mvc8.Mongo.Repository;
+using Mvc8.Mongo.Services;
+
 namespace Mvc8.Mongo;
 
 public class Program
@@ -8,6 +13,34 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddControllersWithViews();
+        builder.Services.AddSingleton<IMongoClient>(sp =>
+            new MongoClient(builder.Configuration.GetConnectionString("MongoConnection")));
+        
+        builder.Services.AddScoped<IMongoRepository<Order>>(sp =>
+        {
+            var client = sp.GetRequiredService<IMongoClient>();
+            var dbName = "demo";
+            var collectionName = "orders";
+            return new MongoRepository<Order>(client, dbName, collectionName);
+        });
+        
+        builder.Services.AddScoped<IMongoRepository<Product>>(sp =>
+        {
+            var client = sp.GetRequiredService<IMongoClient>();
+            var dbName = "demo";
+            var collectionName = "products";
+            return new MongoRepository<Product>(client, dbName, collectionName);
+        });
+        
+        builder.Services.AddScoped<IMongoRepository<Category>>(sp =>
+        {
+            var client = sp.GetRequiredService<IMongoClient>();
+            var dbName = "demo";
+            var collectionName = "categories";
+            return new MongoRepository<Category>(client, dbName, collectionName);
+        });
+
+        builder.Services.AddScoped<OrderService>();
 
         var app = builder.Build();
 
