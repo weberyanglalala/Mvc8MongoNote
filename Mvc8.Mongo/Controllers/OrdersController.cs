@@ -3,7 +3,7 @@ using Mvc8.Mongo.Services;
 
 namespace Mvc8.Mongo.Controllers;
 
-[Route("api/[controller]/[action]")]
+[Route("api/[controller]")]
 [ApiController]
 public class OrdersController : ControllerBase
 {
@@ -14,14 +14,14 @@ public class OrdersController : ControllerBase
         _orderService = orderService;
     }
 
-    public async Task<IActionResult> GetByIdAsync(string id)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Get(string id)
     {
         var order = await _orderService.GetByIdAsync(id);
         if (order == null)
         {
             return NotFound();
         }
-
         return Ok(order);
     }
 }

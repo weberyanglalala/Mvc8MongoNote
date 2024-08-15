@@ -41,6 +41,7 @@ public class Program
         });
 
         builder.Services.AddScoped<OrderService>();
+        builder.Services.AddScoped<CategoryService>();
 
         var app = builder.Build();
 

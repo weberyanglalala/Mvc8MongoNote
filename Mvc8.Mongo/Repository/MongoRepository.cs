@@ -22,7 +22,7 @@ public class MongoRepository<T> : IMongoRepository<T> where T : class
         return await Collection.Find(filter).FirstOrDefaultAsync();
     }
 
-    public async Task<IEnumerable<T>> GetAllAsync()
+    public async Task<List<T>> GetAllAsync()
     {
         return await Collection.Find(_ => true).ToListAsync();
     }

@@ -1,22 +1,38 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Mvc8.Mongo.Models.MongoDb;
 using Mvc8.Mongo.Repository;
+using Mvc8.Mongo.Services;
 
 namespace Mvc8.Mongo.Controllers;
 
 [Route("api/[controller]/[action]")]
 [ApiController]
-public class CategoriesController
+public class CategoriesController : ControllerBase
 {
-    private readonly IMongoRepository<Category> _categoryRepository;
+    private readonly CategoryService _categoryService;
 
-    public CategoriesController(IMongoRepository<Category> categoryRepository)
+    public CategoriesController(CategoryService categoryService)
     {
-        _categoryRepository = categoryRepository;
+        _categoryService = categoryService;
     }
     
-    public async Task<Category> GetByIdAsync(string id)
+    public async Task<IActionResult> GetAllAsync()
     {
-        return await _categoryRepository.GetByIdAsync(id);
+        var categories = await _categoryService.GetAllAsync();
+        return Ok(categories);
     }
+    
+    public async Task<IActionResult> GetThirdLevelCategoriesAsync()
+    {
+        var categories = await _categoryService.GetThirdLevelCategoriesAsync();
+        return Ok(categories);
+    }
+    
+    public async Task<IActionResult> GetCategoryIdByNameAsync(string name)
+    {
+        var categoryId = await _categoryService.GetCategoryIdByNameAsync(name);
+        return Ok(categoryId);
+    }
+    
 }
