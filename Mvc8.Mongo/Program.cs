@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Mvc8.Mongo.Models.MongoDb;
+using Mvc8.Mongo.Models.Settings;
 using Mvc8.Mongo.Repository;
 using Mvc8.Mongo.Services;
 
@@ -7,12 +10,18 @@ namespace Mvc8.Mongo;
 
 public class Program
 {
+    [Experimental("SKEXP0001")]
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
         builder.Services.AddControllersWithViews();
+        builder.Services
+            .Configure<MongoDbVectorSettings>(builder.Configuration.GetSection(nameof(MongoDbVectorSettings)))
+            .AddSingleton(settings => settings.GetRequiredService<IOptions<MongoDbVectorSettings>>().Value);
+
+        builder.Services.AddSingleton<SemanticKernelService>();
         builder.Services.AddSingleton<IMongoClient>(sp =>
             new MongoClient(builder.Configuration.GetConnectionString("MongoConnection")));
         
