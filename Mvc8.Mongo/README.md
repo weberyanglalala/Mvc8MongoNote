@@ -889,5 +889,99 @@ db.sales.find({ storeLocation: { $in: ["London", "New York"] } });
 db.sales.find({ "items.price" : { $gt : 50 }});
 ```
 
-## Query Array Elements in MongoDB
-- $elemMatch
+### Query Array Elements in MongoDB
+
+```js
+db.accounts.find({
+    products: "Commodity"
+});
+```
+
+> this query will return all documents where the products array contains the value "Commodity" and only the value "
+> Commodity"
+
+![](https://hackmd.io/_uploads/HykJQzTCC.png)
+
+#### `$elemMatch`
+
+- Use the $elemMatch operator to find all documents that contain the specified sub document.
+
+> Querying Subdocuments
+
+```js
+db.accounts.find({
+    products: {
+        $elemMatch: {
+            $eq: "Commodity"
+        }
+    }
+});
+```
+
+```js
+db.sales.find({
+    items: {
+        $elemMatch: {name: "laptop", price: {$gt: 800}, quantity: {$gte: 1}},
+    },
+})
+```
+
+```
+{
+  "<field>": {
+    $elemMatch: {
+      <query1>,
+      <query2>,
+      ...
+    }
+  }
+}
+```
+
+#### Sample
+
+```json
+{
+    "_id": 1,
+    "name": "John",
+    "scores": [
+        {"subject": "math", "score": 90},
+        {"subject": "english", "score": 85},
+        {"subject": "history", "score": 80}
+    ]
+}
+```
+
+
+```js
+db.students.find({
+  scores: {
+    $elemMatch: { score: { $gte: 80, $lte: 90 } }
+  }
+})
+```
+
+### Finding Documents by Using Logical Operators
+
+- `$and`, `$or`, `$not`, `$nor`
+
+```
+{
+  "name": "Alice",
+  "age": 25,
+  "city": "New York",
+  "job": "Engineer"
+}
+```
+
+```js
+db.collection.find({
+  $and: [
+    { age: { $gt: 20 } },
+    { city: "New York" }
+  ]
+})
+```
+
+
+
