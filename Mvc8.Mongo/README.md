@@ -942,22 +942,30 @@ db.sales.find({
 
 ```json
 {
-    "_id": 1,
-    "name": "John",
-    "scores": [
-        {"subject": "math", "score": 90},
-        {"subject": "english", "score": 85},
-        {"subject": "history", "score": 80}
-    ]
+  "_id": 1,
+  "name": "John",
+  "scores": [
+    {
+      "subject": "math",
+      "score": 90
+    },
+    {
+      "subject": "english",
+      "score": 85
+    },
+    {
+      "subject": "history",
+      "score": 80
+    }
+  ]
 }
 ```
 
-
 ```js
 db.students.find({
-  scores: {
-    $elemMatch: { score: { $gte: 80, $lte: 90 } }
-  }
+    scores: {
+        $elemMatch: {score: {$gte: 80, $lte: 90}}
+    }
 })
 ```
 
@@ -976,12 +984,135 @@ db.students.find({
 
 ```js
 db.collection.find({
+    $and: [
+        {age: {$gt: 20}},
+        {city: "New York"}
+    ]
+})
+```
+
+```js
+db.collection.find({
+    $or: [
+        {age: {$gt: 30}},
+        {city: "Los Angeles"}
+    ]
+})
+```
+
+> when including the same operator more than once in your query, you need to use the explicit $and operator
+
+```js
+db.collection.find({
+    $and: [
+        {age: {$gt: 25}},
+        {
+            $or: [
+                {city: "Chicago"},
+                {job: "Teacher"}
+            ]
+        }
+    ]
+})
+```
+
+#### Sample
+
+```
+{
+  _id: ObjectId('5bd761dcae323e45a93ccfe8'),
+  saleDate: ISODate('2015-03-23T21:06:49.506Z'),
+  items: [
+    {
+      name: 'printer paper',
+      tags: [ 'office', 'stationary' ],
+      price: Decimal128('40.01'),
+      quantity: 2
+    },
+    {
+      name: 'notepad',
+      tags: [ 'office', 'writing', 'school' ],
+      price: Decimal128('35.29'),
+      quantity: 2
+    },
+    {
+      name: 'pens',
+      tags: [ 'writing', 'office', 'school', 'stationary' ],
+      price: Decimal128('56.12'),
+      quantity: 5
+    },
+    {
+      name: 'backpack',
+      tags: [ 'school', 'travel', 'kids' ],
+      price: Decimal128('77.71'),
+      quantity: 2
+    },
+    {
+      name: 'notepad',
+      tags: [ 'office', 'writing', 'school' ],
+      price: Decimal128('18.47'),
+      quantity: 2
+    },
+    {
+      name: 'envelopes',
+      tags: [ 'stationary', 'office', 'general' ],
+      price: Decimal128('19.95'),
+      quantity: 8
+    },
+    {
+      name: 'envelopes',
+      tags: [ 'stationary', 'office', 'general' ],
+      price: Decimal128('8.08'),
+      quantity: 3
+    },
+    {
+      name: 'binder',
+      tags: [ 'school', 'general', 'organization' ],
+      price: Decimal128('14.16'),
+      quantity: 3
+    }
+  ],
+  storeLocation: 'Denver',
+  customer: { gender: 'M', age: 42, email: 'cauho@witwuta.sv', satisfaction: 4 },
+  couponUsed: true,
+  purchaseMethod: 'Online'
+}
+```
+
+> Find every document in the sales collection that meets the following criteria:
+
+- Purchased online
+- Used a coupon
+- Purchased by a customer 25 years old or younger
+
+```
+db.sales.find({
   $and: [
-    { age: { $gt: 20 } },
-    { city: "New York" }
+    { purchaseMethod: "Online" },
+    { couponUsed: true },
+    { "customer.age": { $lte: 25 } }
   ]
 })
 ```
 
+> Return every document in the sales collection that meets one of the following criteria:
 
+- Item with the name of pens
+- Item with a writing tag
+
+```js
+db.sales.find({
+  $or: [{ "items.name": "pens" }, { "items.tags": "writing" }],
+})
+```
+
+```js
+db.sales.find({
+  items: {
+    $elemMatch: {
+      $or: [{ name: "pens" }, { tags: "writing" }]
+    }
+  }
+})
+```
 
